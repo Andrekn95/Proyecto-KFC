@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat con Documento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #respuesta {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            color: #333;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        strong {
+            color: #007bff;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none; 
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Pregúntale al documento</h2>
+        <input type="text" id="pregunta" placeholder="Escribe tu pregunta aquí...">
+        <button onclick="enviarPregunta()">Preguntar</button>
+        <div class="spinner" id="spinner"></div>
+        <p><strong>Respuesta:</strong></p>
+        <div id="respuesta"></div>
+    </div>
+
+    <script>
+        function enviarPregunta() {
+            const pregunta = document.getElementById("pregunta").value;
+            const respuestaDiv = document.getElementById("respuesta");
+            const spinner = document.getElementById("spinner");
+
+            // Mostrar el spinner y limpiar la respuesta anterior
+            spinner.style.display = "block";
+            respuestaDiv.innerText = "";
+
+            fetch("/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ question: pregunta })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Ocultar el spinner y mostrar la respuesta
+                spinner.style.display = "none";
+                respuestaDiv.innerText = data.response;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                // Ocultar el spinner y mostrar un mensaje de error
+                spinner.style.display = "none";
+                respuestaDiv.innerText = "Hubo un error al procesar la pregunta. Inténtalo de nuevo.";
+            });
+        }
+    </script>
+</body>
+</html>

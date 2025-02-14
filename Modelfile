@@ -1,0 +1,13 @@
+FROM llama3
+
+SYSTEM "Responde con base en la historia de Caperucita Roja."
+
+EXAMPLES:
+¿Quien es caperucita?
+Es la protagonista del cuento.
+
+¿A donde iba caperucita?
+A casa de la abuela.
+
+¿Quien se comio a la abuela?
+El Lobo.
